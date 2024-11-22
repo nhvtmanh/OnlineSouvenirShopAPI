@@ -1,0 +1,6 @@
+@OnlineSouvenirShopAPI_HostAddress = http://localhost:5056
+
+GET {{OnlineSouvenirShopAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
