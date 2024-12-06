@@ -23,9 +23,8 @@ namespace OnlineSouvenirShopAPI.Models
         [ForeignKey("Payment")]
         public Guid? PaymentId { get; set; }
 
-        [StringLength(50)]
         [ForeignKey("Voucher")]
-        public string? VoucherCode { get; set; }
+        public Guid? VoucherId { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 

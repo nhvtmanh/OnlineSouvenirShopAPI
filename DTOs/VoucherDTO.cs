@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnlineSouvenirShopAPI.Models
+namespace OnlineSouvenirShopAPI.DTOs
 {
-    public class Voucher
+    public class VoucherDTO
     {
-        [Key]
-        public Guid Id { get; set; }
-
         [StringLength(50)]
         [Required]
         public string Code { get; set; } = string.Empty;
