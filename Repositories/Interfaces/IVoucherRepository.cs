@@ -9,6 +9,6 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
         Task<Voucher?> GetOne(Guid id);
         Task Create(Voucher voucher);
         Task<Voucher> Update(Voucher voucher);
-        Task<Voucher> Delete(Guid id);
+        Task<Voucher?> Delete(Guid id);
     }
 }

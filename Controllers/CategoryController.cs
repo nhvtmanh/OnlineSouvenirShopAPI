@@ -39,7 +39,7 @@ namespace OnlineSouvenirShopAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryDTO categoryDTO)
+        public async Task<IActionResult> Create([FromBody] CategoryDTO categoryDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -51,7 +51,7 @@ namespace OnlineSouvenirShopAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, CategoryDTO categoryDTO)
+        public async Task<IActionResult> Update(Guid id, [FromBody] CategoryDTO categoryDTO)
         {
             var category = await _categoryRepository.GetOne(id);
             if (category == null)
@@ -70,15 +70,12 @@ namespace OnlineSouvenirShopAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            try
+            var category = await _categoryRepository.Delete(id);
+            if (category == null)
             {
-                var category = await _categoryRepository.Delete(id);
-                return Ok(category);
+                return NotFound(new { message = "Category not found" });
             }
-            catch (Exception e)
-            {
-                return NotFound(new { message = e.Message });
-            }
+            return Ok(category);
         }
     }
 }

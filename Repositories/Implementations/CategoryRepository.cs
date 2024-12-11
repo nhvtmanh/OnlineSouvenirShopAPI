@@ -38,12 +38,12 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
             return category;
         }
 
-        public async Task<Category> Delete(Guid id)
+        public async Task<Category?> Delete(Guid id)
         {
             var category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
             {
-                throw new Exception("Category not found");
+                return null;
             }
             _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();

@@ -9,6 +9,6 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
         Task<Product?> GetOne(Guid id);
         Task Create(Product product);
         Task<Product> Update(Product product);
-        Task<Product> Delete(Guid id);
+        Task<Product?> Delete(Guid id);
     }
 }

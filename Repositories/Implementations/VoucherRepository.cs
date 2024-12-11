@@ -38,12 +38,12 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
             return voucher;
         }
 
-        public async Task<Voucher> Delete(Guid id)
+        public async Task<Voucher?> Delete(Guid id)
         {
             var voucher = await _dbContext.Vouchers.FirstOrDefaultAsync(x => x.Id == id);
             if (voucher == null)
             {
-                throw new Exception("Voucher not found");
+                return null;
             }
             _dbContext.Vouchers.Remove(voucher);
             await _dbContext.SaveChangesAsync();

@@ -39,7 +39,7 @@ namespace OnlineSouvenirShopAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProductDTO productDTO)
+        public async Task<IActionResult> Create([FromBody] ProductDTO productDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -51,7 +51,7 @@ namespace OnlineSouvenirShopAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, ProductDTO productDTO)
+        public async Task<IActionResult> Update(Guid id, [FromBody] ProductDTO productDTO)
         {
             var product = await _productRepository.GetOne(id);
             if (product == null)
@@ -70,15 +70,12 @@ namespace OnlineSouvenirShopAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            try
+            var product = await _productRepository.Delete(id);
+            if (product == null)
             {
-                var product = await _productRepository.Delete(id);
-                return Ok(product);
+                return NotFound(new { message = "Product not found" });
             }
-            catch (Exception e)
-            {
-                return NotFound(new { message = e.Message });
-            }
+            return Ok(product);
         }
     }
 }

@@ -38,12 +38,12 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
             return product;
         }
 
-        public async Task<Product> Delete(Guid id)
+        public async Task<Product?> Delete(Guid id)
         {
             var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (product == null)
             {
-                throw new Exception("Product not found");
+                return null;
             }
             _dbContext.Products.Remove(product);
             await _dbContext.SaveChangesAsync();
