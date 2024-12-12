@@ -22,5 +22,7 @@ namespace OnlineSouvenirShopAPI.Models
 
         [Required]
         public int MaxUsageCount { get; set; }
+
+        public int CurrentUsageCount { get; set; }
     }
 }
