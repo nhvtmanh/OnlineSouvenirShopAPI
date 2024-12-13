@@ -7,9 +7,10 @@ namespace OnlineSouvenirShopAPI.DTOs
     {
         public MappingProfile()
         {
-            CreateMap<Category, CategoryDTO>().ReverseMap();
-            CreateMap<Product, ProductDTO>().ReverseMap();
-            CreateMap<Voucher, VoucherDTO>().ReverseMap();
+            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<ProductDTO, Product>().ReverseMap();
+            CreateMap<VoucherDTO, Voucher>().ReverseMap();
+            CreateMap<RegisterDTO, AppUser>();
         }
     }
 }

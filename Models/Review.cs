@@ -24,7 +24,7 @@ namespace OnlineSouvenirShopAPI.Models
         [Required]
         public DateTime ReviewDate { get; set; }
 
-        public Customer? Customer { get; set; }
+        public AppUser? Customer { get; set; }
 
         public Product? Product { get; set; }
     }

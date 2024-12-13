@@ -28,7 +28,7 @@ namespace OnlineSouvenirShopAPI.Models
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        public Customer? Customer { get; set; }
+        public AppUser? Customer { get; set; }
 
         public Payment? Payment { get; set; }
 

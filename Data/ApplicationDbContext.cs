@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using OnlineSouvenirShopAPI.Models;
 
 namespace OnlineSouvenirShopAPI.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<AppUser>
+    public class ApplicationDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
 
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public DbSet<Order> Orders { get; set; }
 
@@ -25,5 +27,32 @@ namespace OnlineSouvenirShopAPI.Data
         public DbSet<Review> Reviews { get; set; }
 
         public DbSet<Voucher> Vouchers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            
+            List<IdentityRole<Guid>> roles = new List<IdentityRole<Guid>>
+            {
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Customer",
+                    NormalizedName = "CUSTOMER"
+                }
+            };
+            builder.Entity<IdentityRole<Guid>>().HasData(roles);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
     }
 }

@@ -28,9 +28,9 @@ namespace OnlineSouvenirShopAPI
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
             {
-                options.Password.RequiredLength = 6;
+                options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddAuthentication(options =>
@@ -75,7 +75,6 @@ namespace OnlineSouvenirShopAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

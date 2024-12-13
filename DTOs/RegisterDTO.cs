@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineSouvenirShopAPI.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace OnlineSouvenirShopAPI.Models
+namespace OnlineSouvenirShopAPI.DTOs
 {
-    public class Customer
+    public class RegisterDTO
     {
-        [Key]
-        public Guid Id { get; set; }
+        [StringLength(50)]
+        [Required]
+        public string UserName { get; set; } = string.Empty;
 
         [StringLength(50)]
         [EmailAddress]
@@ -14,7 +16,7 @@ namespace OnlineSouvenirShopAPI.Models
 
         [StringLength(255)]
         [Required]
-        public string PasswordHash { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
 
         [StringLength(50)]
         [Required]
@@ -34,9 +36,5 @@ namespace OnlineSouvenirShopAPI.Models
 
         [Required]
         public bool Gender { get; set; }
-
-        public ICollection<Order> Orders { get; set; } = new List<Order>();
-
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }
