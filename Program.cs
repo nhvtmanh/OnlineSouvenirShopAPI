@@ -7,6 +7,8 @@ using OnlineSouvenirShopAPI.Data;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
 using OnlineSouvenirShopAPI.Repositories.Interfaces;
+using OnlineSouvenirShopAPI.Services.Implementations;
+using OnlineSouvenirShopAPI.Services.Interfaces;
 using System.Text;
 
 namespace OnlineSouvenirShopAPI
@@ -57,6 +59,7 @@ namespace OnlineSouvenirShopAPI
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

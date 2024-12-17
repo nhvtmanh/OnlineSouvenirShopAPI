@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
 using OnlineSouvenirShopAPI.Models;
+using OnlineSouvenirShopAPI.Services.Interfaces;
 
 namespace OnlineSouvenirShopAPI.Controllers
 {
@@ -13,11 +14,13 @@ namespace OnlineSouvenirShopAPI.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<AppUser> userManager, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
@@ -37,7 +40,12 @@ namespace OnlineSouvenirShopAPI.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "Customer");
                     if (roleResult.Succeeded)
                     {
-                        return Ok(new { message = "User created successfully" });
+                        return Ok(new NewUserDTO
+                        {
+                            UserName = appUser.UserName!,
+                            Email = appUser.Email!,
+                            Token = _tokenService.CreateToken(appUser)
+                        });
                     }
                     else
                     {
