@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
@@ -9,6 +10,7 @@ namespace OnlineSouvenirShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -38,6 +40,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ProductDTO productDTO)
         {
@@ -50,6 +53,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] ProductDTO productDTO)
         {
@@ -67,6 +71,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

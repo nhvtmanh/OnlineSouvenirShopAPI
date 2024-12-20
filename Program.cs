@@ -8,15 +8,17 @@ using OnlineSouvenirShopAPI.Data;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
 using OnlineSouvenirShopAPI.Repositories.Interfaces;
+using OnlineSouvenirShopAPI.SeedData;
 using OnlineSouvenirShopAPI.Services.Implementations;
 using OnlineSouvenirShopAPI.Services.Interfaces;
+using System.Security.Claims;
 using System.Text;
 
 namespace OnlineSouvenirShopAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +55,8 @@ namespace OnlineSouvenirShopAPI
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["Jwt:Audience"],
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]!)),
+                    RoleClaimType = ClaimTypes.Role
                 };
             });
 
@@ -95,6 +98,12 @@ namespace OnlineSouvenirShopAPI
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                await AdminSeeder.SeedAdminUser(userManager);
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -103,6 +112,13 @@ namespace OnlineSouvenirShopAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(a => a
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                //.WithOrigins("http://localhost:3000")
+                .SetIsOriginAllowed(origin => true));
 
             app.UseAuthentication();
             app.UseAuthorization();
