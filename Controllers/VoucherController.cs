@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
@@ -9,6 +10,7 @@ namespace OnlineSouvenirShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class VoucherController : ControllerBase
     {
         private readonly IVoucherRepository _voucherRepository;

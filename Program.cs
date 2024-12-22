@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using OnlineSouvenirShopAPI.Data;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
@@ -13,6 +14,7 @@ using OnlineSouvenirShopAPI.Services.Implementations;
 using OnlineSouvenirShopAPI.Services.Interfaces;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace OnlineSouvenirShopAPI
 {
@@ -24,7 +26,11 @@ namespace OnlineSouvenirShopAPI
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -63,6 +69,7 @@ namespace OnlineSouvenirShopAPI
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ITokenService, TokenService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

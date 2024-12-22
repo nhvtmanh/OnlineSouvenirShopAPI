@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
@@ -9,6 +10,7 @@ namespace OnlineSouvenirShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
@@ -38,6 +40,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(category);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryDTO categoryDTO)
         {
@@ -50,6 +53,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(category);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] CategoryDTO categoryDTO)
         {
@@ -67,6 +71,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(category);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
