@@ -105,6 +105,8 @@ namespace OnlineSouvenirShopAPI
 
             var app = builder.Build();
 
+            app.UseStaticFiles(); // Serve files from wwwroot
+
             using (var scope = app.Services.CreateScope())
             {
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();

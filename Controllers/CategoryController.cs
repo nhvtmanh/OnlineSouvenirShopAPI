@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
+using OnlineSouvenirShopAPI.DTOs.CategoryDTOs;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
 
@@ -15,11 +16,13 @@ namespace OnlineSouvenirShopAPI.Controllers
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
-        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
+        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper, IWebHostEnvironment env)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _env = env;
         }
 
         [HttpGet]
@@ -42,13 +45,36 @@ namespace OnlineSouvenirShopAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CategoryDTO categoryDTO)
+        public async Task<IActionResult> Create([FromForm] CreateCategoryDTO categoryDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            if (categoryDTO.File == null || categoryDTO.File.Length == 0)
+            {
+                return BadRequest(new { message = "No file uploaded" });
+            }
+
+            // Save file to local folder
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(categoryDTO.File.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await categoryDTO.File.CopyToAsync(stream);
+            }
+
             var category = _mapper.Map<Category>(categoryDTO);
+            category.ImageUrl = $"uploads/{fileName}";
+
             await _categoryRepository.Create(category);
             return Ok(category);
         }
