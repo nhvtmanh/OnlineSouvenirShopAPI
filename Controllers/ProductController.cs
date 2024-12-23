@@ -88,18 +88,42 @@ namespace OnlineSouvenirShopAPI.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] ProductDTO productDTO)
+        public async Task<IActionResult> Update(Guid id, [FromForm] UpdateProductDTO productDTO)
         {
             var product = await _productRepository.GetOne(id);
             if (product == null)
             {
                 return NotFound(new { message = "Product not found" });
             }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            if (productDTO.File == null || productDTO.File.Length == 0)
+            {
+                return BadRequest(new { message = "No file uploaded" });
+            }
+
+            // Save file to local folder
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(productDTO.File.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await productDTO.File.CopyToAsync(stream);
+            }
+
             _mapper.Map(productDTO, product);
+            product.ImageUrl = $"uploads/{fileName}";
+
             await _productRepository.Update(product);
             return Ok(product);
         }

@@ -11,9 +11,13 @@ namespace OnlineSouvenirShopAPI.DTOs
         {
             CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<CreateCategoryDTO, Category>().ReverseMap();
+
             CreateMap<ProductDTO, Product>().ReverseMap();
             CreateMap<CreateProductDTO, Product>().ReverseMap();
+            CreateMap<UpdateProductDTO, Product>().ReverseMap();
+
             CreateMap<VoucherDTO, Voucher>().ReverseMap();
+
             CreateMap<RegisterDTO, AppUser>();
         }
     }
