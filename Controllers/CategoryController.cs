@@ -43,6 +43,13 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(category);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetByName([FromQuery] string name)
+        {
+            var categories = await _categoryRepository.GetByName(name);
+            return Ok(categories);
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateCategoryDTO categoryDTO)

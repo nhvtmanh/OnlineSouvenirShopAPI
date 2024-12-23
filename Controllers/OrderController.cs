@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
+using OnlineSouvenirShopAPI.DTOs.OrderDTOs;
 using OnlineSouvenirShopAPI.Helpers.Enums;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
@@ -27,6 +28,20 @@ namespace OnlineSouvenirShopAPI.Controllers
             _cartRepository = cartRepository;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var orders = await _orderRepository.GetAll();
+            return Ok(orders);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchOrders([FromQuery] OrderQueryObject orderQueryObject)
+        {
+            var orders = await _orderRepository.SearchOrders(orderQueryObject);
+            return Ok(orders);
         }
 
         [HttpPost("purchase")]

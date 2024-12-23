@@ -49,5 +49,12 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
             await _dbContext.SaveChangesAsync();
             return voucher;
         }
+
+        public async Task<IEnumerable<Voucher>> GetByName(string name)
+        {
+            return await _dbContext.Vouchers
+                .Where(x => x.Code.ToLower().Contains(name.ToLower()))
+                .ToListAsync();
+        }
     }
 }

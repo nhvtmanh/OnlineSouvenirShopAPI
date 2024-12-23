@@ -49,5 +49,12 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
             await _dbContext.SaveChangesAsync();
             return category;
         }
+
+        public async Task<IEnumerable<Category>> GetByName(string name)
+        {
+            return await _dbContext.Categories
+                .Where(x => x.Name.ToLower().Contains(name.ToLower()))
+                .ToListAsync();
+        }
     }
 }

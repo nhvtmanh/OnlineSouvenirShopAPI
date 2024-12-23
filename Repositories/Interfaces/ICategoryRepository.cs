@@ -7,6 +7,7 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
     {
         Task<IEnumerable<Category>> GetAll();
         Task<Category?> GetOne(Guid id);
+        Task<IEnumerable<Category>> GetByName(string name);
         Task Create(Category category);
         Task<Category> Update(Category category);
         Task<Category?> Delete(Guid id);

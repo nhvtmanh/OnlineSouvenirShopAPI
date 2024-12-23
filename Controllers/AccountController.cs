@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineSouvenirShopAPI.DTOs;
+using OnlineSouvenirShopAPI.DTOs.UserDTOs;
 using OnlineSouvenirShopAPI.Models;
+using OnlineSouvenirShopAPI.Repositories.Interfaces;
 using OnlineSouvenirShopAPI.Services.Interfaces;
 
 namespace OnlineSouvenirShopAPI.Controllers
@@ -17,13 +20,23 @@ namespace OnlineSouvenirShopAPI.Controllers
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IAccountRepository _accountRepository;
 
-        public AccountController(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, SignInManager<AppUser> signInManager, IAccountRepository accountRepository)
         {
             _userManager = userManager;
             _mapper = mapper;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _accountRepository = accountRepository;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers([FromQuery] UserQueryObject query)
+        {
+            var users = await _accountRepository.SearchUsers(query);
+            return Ok(users);
         }
 
         [HttpPost("register")]

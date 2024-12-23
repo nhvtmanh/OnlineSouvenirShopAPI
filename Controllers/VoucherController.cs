@@ -40,6 +40,13 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(voucher);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetByName([FromQuery] string name)
+        {
+            var vouchers = await _voucherRepository.GetByName(name);
+            return Ok(vouchers);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] VoucherDTO voucherDTO)
         {
