@@ -37,10 +37,28 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(orders);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOne(Guid id)
+        {
+            var order = await _orderRepository.GetOne(id);
+            if (order == null)
+            {
+                return NotFound(new { message = "Order not found" });
+            }
+            return Ok(order);
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> SearchOrders([FromQuery] OrderQueryObject orderQueryObject)
         {
             var orders = await _orderRepository.SearchOrders(orderQueryObject);
+            return Ok(orders);
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterOrders([FromQuery] byte status)
+        {
+            var orders = await _orderRepository.FilterOrders(status);
             return Ok(orders);
         }
 
@@ -110,6 +128,21 @@ namespace OnlineSouvenirShopAPI.Controllers
             await _cartRepository.DeleteCartItems(productIds);
 
             return Ok(createdOrder);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] byte status)
+        {
+            var order = await _orderRepository.GetOne(id);
+            if (order == null)
+            {
+                return NotFound(new { message = "Order not found" });
+            }
+
+            order.Status = status;
+            await _orderRepository.Update(order);
+
+            return Ok(order);
         }
     }
 }

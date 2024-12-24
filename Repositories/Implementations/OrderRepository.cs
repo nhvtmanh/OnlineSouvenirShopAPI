@@ -23,9 +23,19 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
             return order;
         }
 
+        public async Task<IEnumerable<Order>> FilterOrders(byte status)
+        {
+            return await _dbContext.Orders.Where(x => x.Status == status).ToListAsync();
+        }
+
         public async Task<IEnumerable<Order>> GetAll()
         {
             return await _dbContext.Orders.ToListAsync();
+        }
+
+        public async Task<Order?> GetOne(Guid id)
+        {
+            return await _dbContext.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Order>> SearchOrders(OrderQueryObject query)
@@ -48,6 +58,13 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
             }
 
             return await orders.ToListAsync();
+        }
+
+        public async Task<Order> Update(Order order)
+        {
+            _dbContext.Orders.Update(order);
+            await _dbContext.SaveChangesAsync();
+            return order;
         }
     }
 }
