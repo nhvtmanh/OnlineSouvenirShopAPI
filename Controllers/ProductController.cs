@@ -6,6 +6,7 @@ using OnlineSouvenirShopAPI.DTOs;
 using OnlineSouvenirShopAPI.DTOs.ProductDTOs;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
+using System.Security.Claims;
 
 namespace OnlineSouvenirShopAPI.Controllers
 {
@@ -48,6 +49,54 @@ namespace OnlineSouvenirShopAPI.Controllers
         {
             var products = await _productRepository.GetByName(name);
             return Ok(products);
+        }
+
+        [HttpGet("get-favorite")]
+        public async Task<IActionResult> GetFavorite()
+        {
+            var customerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var favoriteProducts = await _productRepository.GetFavorite(customerId);
+            return Ok(favoriteProducts);
+        }
+
+        [HttpPost("add-favorite")]
+        public async Task<IActionResult> AddFavorite([FromBody] Guid productId)
+        {
+            var product = await _productRepository.GetOne(productId);
+            if (product == null)
+            {
+                return NotFound(new { message = "Product not found" });
+            }
+
+            var customerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var favoriteProduct = await _productRepository.AddFavorite(customerId, productId);
+
+            if (favoriteProduct == null)
+            {
+                return BadRequest(new { message = "Product already in favorites" });
+            }
+
+            return Ok(favoriteProduct);
+        }
+
+        [HttpDelete("remove-favorite")]
+        public async Task<IActionResult> RemoveFavorite([FromBody] Guid productId)
+        {
+            var product = await _productRepository.GetOne(productId);
+            if (product == null)
+            {
+                return NotFound(new { message = "Product not found" });
+            }
+
+            var customerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var favoriteProduct = await _productRepository.RemoveFavorite(customerId, productId);
+
+            if (favoriteProduct == null)
+            {
+                return BadRequest(new { message = "Product not in favorites" });
+            }
+
+            return Ok(favoriteProduct);
         }
 
         [Authorize(Roles = "Admin")]

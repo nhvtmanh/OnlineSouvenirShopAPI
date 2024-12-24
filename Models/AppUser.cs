@@ -22,5 +22,7 @@ namespace OnlineSouvenirShopAPI.Models
         public ICollection<Order> Orders { get; set; } = new List<Order>();
 
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        public ICollection<FavoriteProduct> FavoriteProducts { get; set; } = new List<FavoriteProduct>();
     }
 }

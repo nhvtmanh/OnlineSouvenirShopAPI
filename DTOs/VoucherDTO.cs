@@ -15,9 +15,6 @@ namespace OnlineSouvenirShopAPI.DTOs
         public DateTime ExpirationDate { get; set; }
 
         [Required]
-        public byte Status { get; set; }
-
-        [Required]
         public int MaxUsageCount { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineSouvenirShopAPI.DTOs;
+using OnlineSouvenirShopAPI.Helpers.Enums;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Interfaces;
 
@@ -47,6 +48,13 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(vouchers);
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterVouchers([FromQuery] byte status)
+        {
+            var vouchers = await _voucherRepository.FilterVouchers(status);
+            return Ok(vouchers);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] VoucherDTO voucherDTO)
         {
@@ -55,6 +63,7 @@ namespace OnlineSouvenirShopAPI.Controllers
                 return BadRequest(ModelState);
             }
             var voucher = _mapper.Map<Voucher>(voucherDTO);
+            voucher.Status = (byte)VoucherStatus.Inactive;
             await _voucherRepository.Create(voucher);
             return Ok(voucher);
         }

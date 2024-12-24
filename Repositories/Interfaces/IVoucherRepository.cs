@@ -11,5 +11,6 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
         Task Create(Voucher voucher);
         Task<Voucher> Update(Voucher voucher);
         Task<Voucher?> Delete(Guid id);
+        Task<IEnumerable<Voucher>> FilterVouchers(byte status);
     }
 }

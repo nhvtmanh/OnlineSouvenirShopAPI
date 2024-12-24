@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineSouvenirShopAPI.Data;
 
@@ -11,9 +12,11 @@ using OnlineSouvenirShopAPI.Data;
 namespace OnlineSouvenirShopAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241224151154_addFavoriteProduct")]
+    partial class addFavoriteProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,13 +55,13 @@ namespace OnlineSouvenirShopAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fb42f173-5175-413f-9334-4909671ad77e"),
+                            Id = new Guid("b6606f95-1f53-4353-b601-7893df7a1618"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("f9c986eb-1239-41fd-b5e3-dc8e4b60cf2e"),
+                            Id = new Guid("c862f812-c971-4da7-a20d-87268ef07755"),
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -604,7 +607,7 @@ namespace OnlineSouvenirShopAPI.Migrations
             modelBuilder.Entity("OnlineSouvenirShopAPI.Models.FavoriteProduct", b =>
                 {
                     b.HasOne("OnlineSouvenirShopAPI.Models.AppUser", "Customer")
-                        .WithMany("FavoriteProducts")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -682,8 +685,6 @@ namespace OnlineSouvenirShopAPI.Migrations
 
             modelBuilder.Entity("OnlineSouvenirShopAPI.Models.AppUser", b =>
                 {
-                    b.Navigation("FavoriteProducts");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

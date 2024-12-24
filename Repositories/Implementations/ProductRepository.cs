@@ -56,5 +56,43 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
                 .Where(x => x.Name.ToLower().Contains(name.ToLower()))
                 .ToListAsync();
         }
+
+        public async Task<FavoriteProduct?> AddFavorite(Guid customerId, Guid productId)
+        {
+            if (!_dbContext.FavoriteProducts.Any(x => x.CustomerId == customerId && x.ProductId == productId))
+            {
+                var favoriteProduct = new FavoriteProduct
+                {
+                    CustomerId = customerId,
+                    ProductId = productId
+                };
+                _dbContext.FavoriteProducts.Add(favoriteProduct);
+                await _dbContext.SaveChangesAsync();
+                return favoriteProduct;
+            }
+            return null;
+        }
+
+        public async Task<FavoriteProduct?> RemoveFavorite(Guid customerId, Guid productId)
+        {
+            var favoriteProduct = await _dbContext.FavoriteProducts
+                .FirstOrDefaultAsync(x => x.CustomerId == customerId && x.ProductId == productId);
+
+            if (favoriteProduct != null)
+            {
+                _dbContext.FavoriteProducts.Remove(favoriteProduct);
+                await _dbContext.SaveChangesAsync();
+                return favoriteProduct;
+            }
+            return null;
+        }
+
+        public async Task<IEnumerable<FavoriteProduct>> GetFavorite(Guid customerId)
+        {
+            return await _dbContext.FavoriteProducts
+                .Include(x => x.Product)
+                .Where(x => x.CustomerId == customerId)
+                .ToListAsync();
+        }
     }
 }

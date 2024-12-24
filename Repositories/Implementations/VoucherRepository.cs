@@ -56,5 +56,10 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
                 .Where(x => x.Code.ToLower().Contains(name.ToLower()))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Voucher>> FilterVouchers(byte status)
+        {
+            return await _dbContext.Vouchers.Where(x => x.Status == status).ToListAsync();
+        }
     }
 }
