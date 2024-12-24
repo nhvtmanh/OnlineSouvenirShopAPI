@@ -39,6 +39,14 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _accountRepository.GetAll();
+            return Ok(users);
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
         {

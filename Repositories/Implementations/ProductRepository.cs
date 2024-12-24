@@ -94,5 +94,12 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
                 .Where(x => x.CustomerId == customerId)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetByCategory(string name)
+        {
+            return await _dbContext.Products
+                .Where(x => x.Category!.Name == name)
+                .ToListAsync();
+        }
     }
 }

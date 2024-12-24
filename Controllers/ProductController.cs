@@ -51,6 +51,13 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(products);
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetByCategory([FromQuery] string name)
+        {
+            var products = await _productRepository.GetByCategory(name);
+            return Ok(products);
+        }
+
         [HttpGet("get-favorite")]
         public async Task<IActionResult> GetFavorite()
         {

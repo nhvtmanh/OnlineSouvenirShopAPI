@@ -52,13 +52,13 @@ namespace OnlineSouvenirShopAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fb42f173-5175-413f-9334-4909671ad77e"),
+                            Id = new Guid("c36387d6-96b1-4be4-861e-636aaff6a4e5"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("f9c986eb-1239-41fd-b5e3-dc8e4b60cf2e"),
+                            Id = new Guid("6b1b1841-dd61-4372-a3ba-99ee7a493c98"),
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });

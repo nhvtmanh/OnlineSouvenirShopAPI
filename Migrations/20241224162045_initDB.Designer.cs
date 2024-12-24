@@ -12,8 +12,8 @@ using OnlineSouvenirShopAPI.Data;
 namespace OnlineSouvenirShopAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241221013048_addCart")]
-    partial class addCart
+    [Migration("20241224162045_initDB")]
+    partial class initDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,13 +55,13 @@ namespace OnlineSouvenirShopAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ccd10c83-b44a-404a-b9ad-c3a5fa465f6f"),
+                            Id = new Guid("c36387d6-96b1-4be4-861e-636aaff6a4e5"),
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("fe96f48e-1646-4e38-957e-bdef3fa92213"),
+                            Id = new Guid("6b1b1841-dd61-4372-a3ba-99ee7a493c98"),
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -316,6 +316,27 @@ namespace OnlineSouvenirShopAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("OnlineSouvenirShopAPI.Models.FavoriteProduct", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("FavoriteProducts");
                 });
 
             modelBuilder.Entity("OnlineSouvenirShopAPI.Models.Order", b =>
@@ -583,6 +604,25 @@ namespace OnlineSouvenirShopAPI.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OnlineSouvenirShopAPI.Models.FavoriteProduct", b =>
+                {
+                    b.HasOne("OnlineSouvenirShopAPI.Models.AppUser", "Customer")
+                        .WithMany("FavoriteProducts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineSouvenirShopAPI.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("OnlineSouvenirShopAPI.Models.Order", b =>
                 {
                     b.HasOne("OnlineSouvenirShopAPI.Models.AppUser", "Customer")
@@ -645,6 +685,8 @@ namespace OnlineSouvenirShopAPI.Migrations
 
             modelBuilder.Entity("OnlineSouvenirShopAPI.Models.AppUser", b =>
                 {
+                    b.Navigation("FavoriteProducts");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

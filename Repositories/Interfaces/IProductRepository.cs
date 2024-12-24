@@ -14,5 +14,6 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
         Task<FavoriteProduct?> AddFavorite(Guid customerId, Guid productId);
         Task<FavoriteProduct?> RemoveFavorite(Guid customerId, Guid productId);
         Task<IEnumerable<FavoriteProduct>> GetFavorite(Guid customerId);
+        Task<IEnumerable<Product>> GetByCategory(string name);
     }
 }
