@@ -48,6 +48,14 @@ namespace OnlineSouvenirShopAPI.Controllers
             return Ok(order);
         }
 
+        [HttpGet("get-customer-orders")]
+        public async Task<IActionResult> GetCustomerOrders()
+        {
+            var customerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var orders = await _orderRepository.GetCustomerOrders(customerId);
+            return Ok(orders);
+        }
+
         [HttpGet("search")]
         public async Task<IActionResult> SearchOrders([FromQuery] OrderQueryObject orderQueryObject)
         {

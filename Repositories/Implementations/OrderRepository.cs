@@ -33,6 +33,11 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
             return await _dbContext.Orders.ToListAsync();
         }
 
+        public async Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId)
+        {
+            return await _dbContext.Orders.Include(o => o.OrderItems).Where(x => x.CustomerId == customerId).ToListAsync();
+        }
+
         public async Task<Order?> GetOne(Guid id)
         {
             return await _dbContext.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);

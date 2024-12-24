@@ -52,7 +52,7 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
 
         public async Task<Cart?> GetOneCart(Guid customerId)
         {
-            return await _dbContext.Carts.Include(c => c.CartItems).FirstOrDefaultAsync(x => x.CustomerId == customerId);
+            return await _dbContext.Carts.Include(c => c.CartItems).ThenInclude(c => c.Product).FirstOrDefaultAsync(x => x.CustomerId == customerId);
         }
 
         public async Task<CartItem> UpdateCartItem(CartItem cartItem)

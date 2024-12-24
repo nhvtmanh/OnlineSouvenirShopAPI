@@ -20,6 +20,14 @@ namespace OnlineSouvenirShopAPI.Controllers
             _cartRepository = cartRepository;
         }
 
+        [HttpGet("get-cart")]
+        public async Task<IActionResult> GetCart()
+        {
+            var customerId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var cart = await _cartRepository.GetOneCart(customerId);
+            return Ok(cart);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartDTO addToCartDTO)
         {
