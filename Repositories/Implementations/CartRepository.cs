@@ -38,11 +38,22 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
             return cartItem;
         }
 
-        public async Task DeleteCartItems(List<Guid> productIds)
+        public async Task DeleteCartItems(IEnumerable<CartItem> cartItems)
+        {
+            _dbContext.CartItems.RemoveRange(cartItems);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteCartItemsByProductIds(List<Guid> productIds)
         {
             var cartItems = await _dbContext.CartItems.Where(x => productIds.Contains((Guid)x.ProductId!)).ToListAsync();
             _dbContext.CartItems.RemoveRange(cartItems);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<CartItem?> GetCartItem(Guid cartItemId)
+        {
+            return await _dbContext.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
         }
 
         public async Task<IEnumerable<CartItem>> GetCartItems(List<Guid> cartItemIds)

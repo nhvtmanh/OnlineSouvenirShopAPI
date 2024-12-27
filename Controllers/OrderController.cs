@@ -78,7 +78,7 @@ namespace OnlineSouvenirShopAPI.Controllers
 
             if (cartItems.Count() == 0)
             {
-                return BadRequest(new { message = "No cart items found" });
+                return NotFound(new { message = "No cart items found" });
             }
 
             // Check quantity in stock
@@ -133,7 +133,7 @@ namespace OnlineSouvenirShopAPI.Controllers
             }
 
             // Delete cart items
-            await _cartRepository.DeleteCartItems(productIds);
+            await _cartRepository.DeleteCartItemsByProductIds(productIds);
 
             return Ok(createdOrder);
         }
