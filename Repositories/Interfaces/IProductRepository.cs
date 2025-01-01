@@ -1,4 +1,5 @@
 ﻿using OnlineSouvenirShopAPI.DTOs;
+using OnlineSouvenirShopAPI.DTOs.ProductDTOs;
 using OnlineSouvenirShopAPI.Models;
 
 namespace OnlineSouvenirShopAPI.Repositories.Implementations
@@ -15,5 +16,6 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
         Task<FavoriteProduct?> RemoveFavorite(Guid customerId, Guid productId);
         Task<IEnumerable<FavoriteProduct>> GetFavorite(Guid customerId);
         Task<IEnumerable<Product>> GetByCategory(string name);
+        Task<ProductDashboardResponse> GetProductDashboard();
     }
 }

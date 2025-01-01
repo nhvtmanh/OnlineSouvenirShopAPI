@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineSouvenirShopAPI.Data;
 using OnlineSouvenirShopAPI.DTOs;
+using OnlineSouvenirShopAPI.DTOs.ProductDTOs;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Implementations;
 
@@ -100,6 +101,25 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
             return await _dbContext.Products
                 .Where(x => x.Category!.Name == name)
                 .ToListAsync();
+        }
+
+        public async Task<ProductDashboardResponse> GetProductDashboard()
+        {
+            var productDashboardResponse = new ProductDashboardResponse
+            {
+                TotalProducts = await _dbContext.Products.CountAsync(),
+                TopSellingProducts = await _dbContext.Products
+                    .OrderByDescending(p => p.SoldQuantity)
+                    .Take(5)
+                    .Select(x => new TopSellingProductDTO
+                    {
+                        ProductName = x.Name,
+                        SoldQuantity = x.SoldQuantity,
+                        ImageUrl = x.ImageUrl!
+                    })
+                    .ToListAsync()
+            };
+            return productDashboardResponse;
         }
     }
 }
