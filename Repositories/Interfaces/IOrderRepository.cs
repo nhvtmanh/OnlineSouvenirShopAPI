@@ -12,5 +12,6 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
         Task<IEnumerable<Order>> SearchOrders(OrderQueryObject query);
         Task<IEnumerable<Order>> FilterOrders(byte status);
         Task<Order> Update(Order order);
+        Task<OrderDashboardResponse> GetOrderDashboard();
     }
 }

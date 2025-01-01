@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineSouvenirShopAPI.Data;
 using OnlineSouvenirShopAPI.DTOs.OrderDTOs;
+using OnlineSouvenirShopAPI.Helpers.Enums;
 using OnlineSouvenirShopAPI.Models;
 using OnlineSouvenirShopAPI.Repositories.Interfaces;
 
@@ -41,6 +42,38 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
         public async Task<Order?> GetOne(Guid id)
         {
             return await _dbContext.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<OrderDashboardResponse> GetOrderDashboard()
+        {
+            var totalOrders = await _dbContext.Orders.CountAsync();
+            var totalOrdersProcessing = await _dbContext.Orders.CountAsync(x => x.Status == (byte)OrderStatus.Processing);
+            var totalOrdersShipping = await _dbContext.Orders.CountAsync(x => x.Status == (byte)OrderStatus.Shipping);
+            var totalOrdersDelivered = await _dbContext.Orders.CountAsync(x => x.Status == (byte)OrderStatus.Delivered);
+            var totalOrdersCancelled = await _dbContext.Orders.CountAsync(x => x.Status == (byte)OrderStatus.Cancelled);
+            var totalRevenue = await _dbContext.Orders.Where(x => x.Status == (byte)OrderStatus.Delivered).SumAsync(x => x.Total);
+            var revenueByDays = await _dbContext.Orders
+                .Where(x => x.Status == (byte)OrderStatus.Delivered)
+                .GroupBy(x => x.OrderDate.Date)
+                .Select(x => new RevenueByDayDTO
+                {
+                    Date = DateOnly.FromDateTime(x.Key),
+                    Revenue = x.Sum(x => x.Total)
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+
+            var orderDashboard = new OrderDashboardResponse
+            {
+                TotalOrders = totalOrders,
+                TotalOrdersProcessing = totalOrdersProcessing,
+                TotalOrdersShipping = totalOrdersShipping,
+                TotalOrdersDelivered = totalOrdersDelivered,
+                TotalOrdersCancelled = totalOrdersCancelled,
+                TotalRevenue = totalRevenue,
+                RevenueByDays = revenueByDays
+            };
+            return orderDashboard;
         }
 
         public async Task<IEnumerable<Order>> SearchOrders(OrderQueryObject query)
