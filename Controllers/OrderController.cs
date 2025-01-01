@@ -150,6 +150,17 @@ namespace OnlineSouvenirShopAPI.Controllers
             order.Status = status;
             await _orderRepository.Update(order);
 
+            // Check if order is delivered -> Update sold quantity
+            if (status == (byte)OrderStatus.Delivered)
+            {
+                foreach (var item in order.OrderItems)
+                {
+                    var product = await _productRepository.GetOne((Guid)item.ProductId!);
+                    product!.SoldQuantity += item.Quantity;
+                    await _productRepository.Update(product);
+                }
+            }
+
             return Ok(order);
         }
     }
