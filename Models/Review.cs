@@ -14,9 +14,6 @@ namespace OnlineSouvenirShopAPI.Models
         [ForeignKey("Customer")]
         public Guid? CustomerId { get; set; }
 
-        [Required]
-        public byte Rating { get; set; }
-
         [StringLength(255)]
         [Required]
         public string Comment { get; set; } = string.Empty;
