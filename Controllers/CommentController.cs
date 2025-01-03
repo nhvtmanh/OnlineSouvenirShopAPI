@@ -31,6 +31,8 @@ namespace OnlineSouvenirShopAPI.Controllers
             comment.ReviewDate = DateTime.Now;
 
             var createdComment = await _commentRepository.Create(comment);
+
+            var returnComment = await _commentRepository.GetOne(createdComment.Id);
             return Ok(createdComment);
         }
     }
