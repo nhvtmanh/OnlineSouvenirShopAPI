@@ -23,7 +23,11 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
 
         public async Task<Product?> GetOne(Guid id)
         {
-            return await _dbContext.Products.Include(p => p.Category).Include(p => p.Reviews).FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Products
+                .Include(p => p.Category)
+                .Include(p => p.Reviews)
+                .ThenInclude(p => p.Customer)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task Create(Product product)
