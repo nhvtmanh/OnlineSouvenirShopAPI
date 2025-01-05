@@ -6,7 +6,7 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAll();
+        Task<IEnumerable<Product>> GetAll(PagingQueryObject queryObject);
         Task<Product?> GetOne(Guid id);
         Task<IEnumerable<Product>> GetByName(string name);
         Task Create(Product product);

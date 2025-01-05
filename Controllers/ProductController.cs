@@ -27,9 +27,9 @@ namespace OnlineSouvenirShopAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PagingQueryObject queryObject)
         {
-            var products = await _productRepository.GetAll();
+            var products = await _productRepository.GetAll(queryObject);
             return Ok(products);
         }
 

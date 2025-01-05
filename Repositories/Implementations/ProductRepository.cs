@@ -16,9 +16,13 @@ namespace OnlineSouvenirShopAPI.Repositories.Interfaces
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<Product>> GetAll(PagingQueryObject queryObject)
         {
-            return await _dbContext.Products.ToListAsync();
+            var skipNumber = (queryObject.PageNumber - 1) * queryObject.PageSize;
+            return await _dbContext.Products
+                .Skip(skipNumber)
+                .Take(queryObject.PageSize)
+                .ToListAsync();
         }
 
         public async Task<Product?> GetOne(Guid id)
