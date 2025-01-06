@@ -61,5 +61,10 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
         {
             return await _dbContext.Vouchers.Where(x => x.Status == status).ToListAsync();
         }
+
+        public async Task<Voucher?> GetByCode(string code)
+        {
+            return await _dbContext.Vouchers.FirstOrDefaultAsync(x => x.Code == code);
+        }
     }
 }

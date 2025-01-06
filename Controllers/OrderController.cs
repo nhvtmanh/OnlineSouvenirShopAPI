@@ -21,13 +21,15 @@ namespace OnlineSouvenirShopAPI.Controllers
         private readonly ICartRepository _cartRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IVoucherRepository _voucherRepository;
 
-        public OrderController(UserManager<AppUser> userManager, ICartRepository cartRepository, IOrderRepository orderRepository, IProductRepository productRepository)
+        public OrderController(UserManager<AppUser> userManager, ICartRepository cartRepository, IOrderRepository orderRepository, IProductRepository productRepository, IVoucherRepository voucherRepository)
         {
             _userManager = userManager;
             _cartRepository = cartRepository;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _voucherRepository = voucherRepository;
         }
 
         [HttpGet]
@@ -105,12 +107,64 @@ namespace OnlineSouvenirShopAPI.Controllers
                 }).ToList()
             };
 
+            // Apply voucher code
+            if (!string.IsNullOrEmpty(purchaseDTO.VoucherCode))
+            {
+                var voucher = await _voucherRepository.GetByCode(purchaseDTO.VoucherCode);
+
+                // Check if voucher exists
+                if (voucher == null)
+                {
+                    return NotFound(new { message = "Voucher not found" });
+                }
+
+                // Check if voucher is active
+                if (voucher.Status != (byte)VoucherStatus.Active)
+                {
+                    return BadRequest(new { message = "Voucher cannot be used" });
+                }
+
+                // Check if current usage is less than max usage
+                if (voucher.CurrentUsageCount >= voucher.MaxUsageCount)
+                {
+                    return BadRequest(new { message = "Voucher has reached max usage" });
+                }
+
+                order.VoucherId = voucher.Id;
+                order.Total = order.Total * (1 - (decimal)voucher.DiscountAmount / 100);
+            }
+
             return Ok(order);
         }
 
         [HttpPost("place-order")]
         public async Task<IActionResult> PlaceOrder([FromBody] Order order)
         {
+            // Check voucher
+            if (order.VoucherId != null)
+            {
+                var voucher = await _voucherRepository.GetOne((Guid)order.VoucherId);
+                if (voucher == null)
+                {
+                    return NotFound(new { message = "Voucher not found" });
+                }
+
+                // Check if voucher is active
+                if (voucher.Status != (byte)VoucherStatus.Active)
+                {
+                    return BadRequest(new { message = "Voucher cannot be used" });
+                }
+
+                // Check if current usage is less than max usage
+                if (voucher.CurrentUsageCount >= voucher.MaxUsageCount)
+                {
+                    return BadRequest(new { message = "Voucher has reached max usage" });
+                }
+
+                voucher.CurrentUsageCount++;
+                await _voucherRepository.Update(voucher);
+            }
+
             order.OrderDate = DateTime.Now;
             order.Status = (byte)OrderStatus.Processing;
 
