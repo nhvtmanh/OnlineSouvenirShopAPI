@@ -41,7 +41,7 @@ namespace OnlineSouvenirShopAPI.Repositories.Implementations
 
         public async Task<Order?> GetOne(Guid id)
         {
-            return await _dbContext.Orders.Include(x => x.OrderItems).FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Orders.Include(x => x.OrderItems).ThenInclude(oi => oi.Product).Include(x => x.Customer).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<OrderDashboardResponse> GetOrderDashboard()
